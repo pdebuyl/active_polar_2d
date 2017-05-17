@@ -1,0 +1,6 @@
+*~
+build/
+dist/
+*.pyc
+active_polar_2d.egg-info
+active_polar_2d/core.c
