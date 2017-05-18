@@ -14,6 +14,8 @@ parser.add_argument('--gamma-perp', type=float, default=1)
 parser.add_argument('--gamma-r', type=float, default=1)
 parser.add_argument('--gravity', type=float, default=0)
 parser.add_argument('-L', type=float, default=10)
+parser.add_argument('--method', default='euler', choices=('euler', 'rk2'))
+parser.add_argument('--interval', type=int, default=10)
 args = parser.parse_args()
 
 import numpy as np
@@ -30,8 +32,7 @@ else:
 
 # Run the simulation
 
-interval = 100
-dt = 0.001
+dt = 0.1/args.interval
 
 r_cut = 3**(1/6)
 L = args.L
@@ -67,11 +68,12 @@ x, y, theta = \
 active_polar_2d.integrate_OD_2d_theta(L/2, 0, 0,
                                       args.gamma_par, args.gamma_perp,
                                       args.gamma_r, args.T, args.v0, dt,
-                                      interval, args.steps, f=f, seed=seed)
+                                      args.interval, args.steps, f=f, seed=seed,
+                                      method=args.method)
 
 # Display the results
 N = len(x)
-t = dt*interval*np.arange(N)
+t = dt*args.interval*np.arange(N)
 
 plt.figure()
 ax1 = plt.subplot(311)
