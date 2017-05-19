@@ -14,8 +14,9 @@ parser.add_argument('--gamma-perp', type=float, default=1)
 parser.add_argument('--gamma-r', type=float, default=1)
 parser.add_argument('--gravity', type=float, default=0)
 parser.add_argument('-L', type=float, default=10)
-parser.add_argument('--method', default='euler', choices=('euler', 'rk2'))
-parser.add_argument('--interval', type=int, default=10)
+parser.add_argument('--bond-l', type=float, default=2)
+parser.add_argument('--method', default='rk2', choices=('euler', 'rk2'))
+parser.add_argument('--interval', type=int, default=20)
 args = parser.parse_args()
 
 import numpy as np
@@ -57,15 +58,14 @@ bond_l = 2
 def f(x, y, theta):
     c_th = math.cos(theta)
     s_th = math.sin(theta)
-    x1 = x + c_th
+    x1 = x + c_th*bond_l
     f1 = wall_f(x1)
-    x2 = x - c_th
+    x2 = x - c_th*bond_l
     f2 = wall_f(x2)
-    return f1 + f2 - grav, 0, s_th*bond_l/2*(f1-f2)
-
+    return f1 + f2 - grav, 0, s_th*bond_l/2*(f2-f1)
 
 x, y, theta = \
-active_polar_2d.integrate_OD_2d_theta(L/2, 0, 0,
+active_polar_2d.integrate_OD_2d_theta(L/2, 0, np.pi/2,
                                       args.gamma_par, args.gamma_perp,
                                       args.gamma_r, args.T, args.v0, dt,
                                       args.interval, args.steps, f=f, seed=seed,
@@ -89,5 +89,9 @@ plt.hist(x, normed=True, bins=32)
 
 ax4 = plt.subplot(326)
 plt.hist(np.mod(theta, 2*np.pi), normed=True, bins=32)
+
+plt.figure()
+
+plt.hist2d(x, np.cos(theta), weights=np.sqrt(1-np.cos(theta)**2), bins=16)
 
 plt.show()
