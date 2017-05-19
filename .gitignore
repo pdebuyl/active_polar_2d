@@ -2,5 +2,7 @@
 build/
 dist/
 *.pyc
+*.so
 active_polar_2d.egg-info
 active_polar_2d/core.c
+examples/wall_force_torque.c
