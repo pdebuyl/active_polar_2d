@@ -17,6 +17,7 @@ parser.add_argument('-L', type=float, default=10)
 parser.add_argument('--bond-l', type=float, default=2)
 parser.add_argument('--method', default='rk2', choices=('euler', 'rk2'))
 parser.add_argument('--interval', type=int, default=20)
+parser.add_argument('--dt', type=float, default=0.1)
 args = parser.parse_args()
 
 import numpy as np
@@ -32,8 +33,6 @@ else:
     seed = int((time.time()*1000) % 2**32)
 
 # Run the simulation
-
-dt = 0.1/args.interval
 
 r_cut = 3**(1/6)
 L = args.L
@@ -52,8 +51,7 @@ def wall_f(x):
 
 
 grav = float(args.gravity)
-bond_l = 2
-
+bond_l = float(args.bond_l)
 
 def f(x, y, theta):
     c_th = math.cos(theta)
@@ -67,13 +65,13 @@ def f(x, y, theta):
 x, y, theta = \
 active_polar_2d.integrate_OD_2d_theta(L/2, 0, np.pi/2,
                                       args.gamma_par, args.gamma_perp,
-                                      args.gamma_r, args.T, args.v0, dt,
+                                      args.gamma_r, args.T, args.v0, args.dt,
                                       args.interval, args.steps, f=f, seed=seed,
                                       method=args.method)
 
 # Display the results
 N = len(x)
-t = dt*args.interval*np.arange(N)
+t = args.dt*args.interval*np.arange(N)
 
 plt.figure()
 ax1 = plt.subplot(311)
