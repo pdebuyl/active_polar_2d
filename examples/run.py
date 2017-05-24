@@ -56,9 +56,9 @@ bond_l = float(args.bond_l)
 def f(x, y, theta):
     c_th = math.cos(theta)
     s_th = math.sin(theta)
-    x1 = x + c_th*bond_l
+    x1 = x + c_th*bond_l/2
     f1 = wall_f(x1)
-    x2 = x - c_th*bond_l
+    x2 = x - c_th*bond_l/2
     f2 = wall_f(x2)
     return f1 + f2 - grav, 0, s_th*bond_l/2*(f2-f1)
 
